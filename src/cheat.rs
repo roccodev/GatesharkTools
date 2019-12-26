@@ -1,20 +1,23 @@
-struct Cheat {
-    descriptor: Descriptor,
-    instructions: Vec<Instruction>
+use num_enum::TryFromPrimitive;
+
+pub struct Cheat {
+    pub descriptor: Descriptor,
+    pub instructions: Vec<Instruction>
 }
 
-struct Descriptor {
-    name: String
+pub struct Descriptor {
+    pub name: String
 }
 
-struct Instruction {
-    opcode: Opcode,
-    block_a: String,
-    block_b: String,
-    checker: Box<dyn crate::check::Checker>
+pub struct Instruction {
+    pub opcode: Opcode,
+    pub block_a: String,
+    pub block_b: String,
+    pub checker: Box<dyn crate::check::Checker>
 }
 
-#[derive(Eq, PartialEq)]
+#[repr(usize)]
+#[derive(Eq, PartialEq, TryFromPrimitive, Copy, Clone)]
 pub enum Opcode {
     WriteWord,
     WriteShort,
