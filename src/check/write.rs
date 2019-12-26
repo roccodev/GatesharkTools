@@ -1,4 +1,3 @@
-#[macro_use]
 use crate::check;
 use crate::check::{Checker, CheckResult, errors};
 use crate::cheat::Opcode;
