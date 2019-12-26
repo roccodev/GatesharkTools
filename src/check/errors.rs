@@ -6,4 +6,4 @@ macro_rules! err {
     };
 }
 
-err!(WRONG_PARAM, 0, "Wrong parameter P used in Block A (PXXXXXXX). Check Gateshark reference for information.");
+err!(WRONG_SIZE, 0, "Wrong size used in Block B. Check Gateshark reference for more information.");
