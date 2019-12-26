@@ -1,5 +1,5 @@
 [package]
-name = "GatesharkTools"
+name = "gateshark-tools"
 version = "0.1.0"
 authors = ["RoccoDev <roccodev.business@gmail.com>"]
 edition = "2018"
