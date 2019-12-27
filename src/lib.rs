@@ -19,3 +19,4 @@ pub mod cheat;
 #[macro_use]
 pub mod check;
 pub mod parse;
+pub mod compile;
