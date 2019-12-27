@@ -34,11 +34,11 @@ impl Checker for AlwaysPassChecker {
 
 pub fn get_checker(opcode: Opcode) -> Box<dyn Checker> {
     match opcode {
-        WriteWord | WriteShort | WriteByte => Box::new(checks::WriteChecker),
+        WriteWord | WriteShort | WriteByte | EqShort | LtShort | GtShort | NeShort => Box::new(checks::WriteChecker),
         Reset | EndCond | SetOffsetPtr => Box::new(checks::ResetChecker),
-        Repeat | SetOffsetImmediate | AddToDxData | SetDxData | CopyDxByte | CopyDxShort | CopyDxWord
+        Repeat | EndRepeat | SetOffsetImmediate | AddToDxData | SetDxData | CopyDxByte | CopyDxShort | CopyDxWord
         | LoadDxByte | LoadDxShort | LoadDxWord | AddOffset | BtnCode => Box::new(checks::ZeroAfterOpcodeChecker),
-        _ => Box::new(AlwaysPassChecker)
+        EqWord | LtWord | GtWord | NeWord => Box::new(AlwaysPassChecker)
     }
 }
 

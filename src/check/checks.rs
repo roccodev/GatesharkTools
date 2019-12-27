@@ -5,7 +5,11 @@ use crate::cheat::Opcode;
 pub struct WriteChecker;
 impl Checker for WriteChecker {
     fn check(&self, instr: Opcode, block_a: &str, block_b: &str) -> CheckResult {
-        err_if!(instr == Opcode::WriteShort && !block_b.starts_with("0000"), errors::WRONG_SIZE);
+        let short = match instr {
+            Opcode::WriteShort | Opcode::GtShort | Opcode::LtShort | Opcode::EqShort | Opcode::NeShort => true,
+            _ => false
+        };
+        err_if!(short && !block_b.starts_with("0000"), errors::WRONG_SIZE);
         err_if!(instr == Opcode::WriteByte && !block_b.starts_with("000000"), errors::WRONG_SIZE);
         CheckResult::Pass
     }
