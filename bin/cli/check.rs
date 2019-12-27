@@ -46,6 +46,8 @@ pub fn check(path: String) {
             match res.res_type {
                 CheckResult::Warning(w) => {
                     println!("--> {}: {}", "Warning".yellow().bold(), w);
+                    println!("   --> {} @ Line {}", cheat.descriptor.name, line + 2);
+                    println!("   --> {} {}", cheat.instructions[line].block_a, cheat.instructions[line].block_b);
                 }
                 CheckResult::Error(id, msg) => {
                     println!("--> {}: ({}) {}", "Error".red().bold(), id, msg);
