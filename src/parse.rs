@@ -34,3 +34,20 @@ pub fn parse_cheat(input: &[String]) -> Cheat {
         instructions
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::parse::parse_cheat;
+    use crate::cheat::Opcode;
+
+    #[test]
+    pub fn test_parsing() {
+        let cheat = "[Test Cheat]\n0AF2CD18 CFF2AD4C";
+        let parsed = parse_cheat(cheat.lines().map(|s| s.to_owned())
+            .collect::<Vec<String>>().as_slice());
+        assert_eq!("[Test Cheat]", parsed.descriptor.name);
+        assert_eq!(Opcode::WriteWord, parsed.instructions[0].opcode);
+        assert_eq!("0AF2CD18", parsed.instructions[0].block_a);
+        assert_eq!("CFF2AD4C", parsed.instructions[0].block_b);
+    }
+}

@@ -17,7 +17,7 @@ pub struct Instruction {
 }
 
 #[repr(usize)]
-#[derive(Eq, PartialEq, TryFromPrimitive, Copy, Clone)]
+#[derive(Eq, PartialEq, TryFromPrimitive, Copy, Clone, Debug)]
 pub enum Opcode {
     WriteWord,
     WriteShort,
