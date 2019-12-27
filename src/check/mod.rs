@@ -14,8 +14,8 @@
  *    limitations under the License.
 */
 
-use crate::cheat::Opcode::{self, *};
 use crate::cheat::{Cheat, Instruction};
+use crate::cheat::Opcode::{self, *};
 use crate::check::CheckResult::Error;
 
 macro_rules! err_if {
@@ -34,6 +34,20 @@ pub enum CheckResult {
     Pass,
     Warning(String),
     Error(usize, String)
+}
+
+pub struct DetailedResult {
+    pub res_type: CheckResult,
+    pub cheat_line: usize
+}
+
+impl DetailedResult {
+    pub fn new(res_type: CheckResult, line: usize) -> DetailedResult {
+        DetailedResult {
+            res_type,
+            cheat_line: line
+        }
+    }
 }
 
 pub trait Checker {
@@ -73,19 +87,24 @@ fn check_instruction_pre(instruction: &Instruction, results: &mut Vec<CheckResul
     }
 }
 
-pub fn check_cheat(cheat: &Cheat) -> (CheckResult, Vec<CheckResult>) {
+pub fn check_cheat(cheat: &Cheat) -> (CheckResult, Vec<DetailedResult>) {
     let mut results = vec![];
-    for instr in &cheat.instructions {
-        check_instruction_pre(instr, &mut results);
+    for (line, instr) in cheat.instructions.iter().enumerate() {
+        let mut current = vec![];
+        check_instruction_pre(instr, &mut current);
         let result = instr.checker.check(instr.opcode, &instr.block_a, &instr.block_b);
-        results.push(result);
+        current.push(result);
+
+        for res in current {
+            results.push(DetailedResult::new(res, line));
+        }
     }
     let mut final_res = CheckResult::Pass;
-    if results.iter().filter(|r| if let CheckResult::Error(_, _) = **r {true} else {false})
+    if results.iter().filter(|r| if let CheckResult::Error(_, _) = (**r).res_type {true} else {false})
         .count() > 0 {
         final_res = CheckResult::Error(0, "Instruction compiled with errors.".to_owned());
     }
-    else if results.iter().filter(|r| if let CheckResult::Warning(_) = **r {true} else {false})
+    else if results.iter().filter(|r| if let CheckResult::Warning(_) = (**r).res_type {true} else {false})
         .count() > 0 {
         final_res = CheckResult::Warning("Instruction compiled with warnings.".to_owned());
     }
@@ -94,8 +113,8 @@ pub fn check_cheat(cheat: &Cheat) -> (CheckResult, Vec<CheckResult>) {
 
 #[cfg(test)]
 mod tests {
-    use crate::cheat::{Instruction, Opcode, Cheat, Descriptor};
-    use crate::check::{get_checker, check_cheat, CheckResult};
+    use crate::cheat::{Cheat, Descriptor, Instruction, Opcode};
+    use crate::check::{check_cheat, CheckResult, get_checker};
 
     #[test]
     pub fn pass_check() {

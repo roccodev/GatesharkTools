@@ -13,3 +13,20 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
 */
+#[macro_use]
+extern crate clap;
+
+use clap::{App, AppSettings};
+
+mod check;
+
+fn main() {
+    let yml = load_yaml!("res/cli.yml");
+    let app = App::from_yaml(yml).setting(AppSettings::ArgRequiredElseHelp);
+    let matches = app.get_matches();
+    match matches.subcommand_name() {
+        Some("check") => check::check(matches.subcommand().1
+            .unwrap().value_of("file").unwrap().to_owned()), // TODO Prettify
+        _ => {}
+    }
+}

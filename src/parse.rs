@@ -15,6 +15,7 @@
 */
 
 use std::convert::TryFrom;
+
 use crate::cheat::{Cheat, Descriptor, Instruction, Opcode};
 use crate::check::get_checker;
 
@@ -29,17 +30,17 @@ pub fn parse_cheat(input: &[String]) -> Cheat {
             let first = blk_a.chars().take(2).map(|c| c.to_string())
                 .collect::<Vec<String>>().join("").to_lowercase();
             if first.starts_with("d") {
-                first.parse::<usize>().unwrap()
+                usize::from_str_radix(&first, 16).unwrap()
             }
             else {
-                first.chars().nth(0).unwrap().to_string().parse::<usize>().unwrap()
+                usize::from_str_radix(&first[0..1], 16).unwrap()
             }
         };
         let opcode = Opcode::try_from(opcode).unwrap();
         instructions.push(Instruction {
             opcode,
-            block_a: blk_a.to_owned(),
-            block_b: blk_b.to_owned(),
+            block_a: blk_a.to_owned().to_lowercase(),
+            block_b: blk_b.to_owned().to_lowercase(),
             checker: get_checker(opcode)
         });
     });
@@ -53,8 +54,8 @@ pub fn parse_cheat(input: &[String]) -> Cheat {
 
 #[cfg(test)]
 mod tests {
-    use crate::parse::parse_cheat;
     use crate::cheat::Opcode;
+    use crate::parse::parse_cheat;
 
     #[test]
     pub fn test_parsing() {
@@ -63,7 +64,7 @@ mod tests {
             .collect::<Vec<String>>().as_slice());
         assert_eq!("[Test Cheat]", parsed.descriptor.name);
         assert_eq!(Opcode::WriteWord, parsed.instructions[0].opcode);
-        assert_eq!("0AF2CD18", parsed.instructions[0].block_a);
-        assert_eq!("CFF2AD4C", parsed.instructions[0].block_b);
+        assert_eq!("0af2cd18", parsed.instructions[0].block_a);
+        assert_eq!("cff2ad4c", parsed.instructions[0].block_b);
     }
 }

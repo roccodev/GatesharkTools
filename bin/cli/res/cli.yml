@@ -1,0 +1,13 @@
+name: gateshark-tools
+bin_name: gsk
+version: "1.0"
+author: RoccoDev <hey@rocco.dev>
+about: Gateshark cheat code tooling.
+subcommands:
+  - check:
+      about: Checks a Gateshark game sheet for errors.
+      args:
+        - file:
+            short: f
+            help: A path to the Gateshark file.
+            takes_value: true

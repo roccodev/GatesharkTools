@@ -14,8 +14,8 @@
  *    limitations under the License.
 */
 
-mod cheat;
+pub mod cheat;
 
 #[macro_use]
-mod check;
-mod parse;
+pub mod check;
+pub mod parse;

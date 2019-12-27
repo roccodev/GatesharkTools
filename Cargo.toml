@@ -7,6 +7,18 @@ edition = "2018"
 [[bin]]
 name = "cli"
 path = "bin/cli/main.rs"
+required-features = ["cli"]
 
 [dependencies]
 num_enum = "0.4.2"
+clap = {version = "2.33.0", features = ["yaml"], optional = true}
+colored = {version = "1.9.0", optional = true}
+
+# Current workaround until
+# https://github.com/dmarcuse/rfcs/blob/master/text/0000-cargo-artifact-specific-dependencies.md
+[features]
+cli = ["clap", "colored"]
+
+[profile.release]
+opt-level = 'z'
+lto = true
