@@ -31,8 +31,8 @@ impl IntoCompiled for WriteCompiler {
         });
         match *env {
             Implementation::C {ntr} => {
-                if !ntr {format!("*({} *)(0x{} + offset) = 0x{};", size, block_a, block_b)} else
-                {format!("WRITE{}(0x{} + offset, 0x{});", size.to_uppercase(), block_a, block_b)}
+                if !ntr {format!("*({} *)(0x0{} + offset) = 0x{};", size, block_a, block_b)} else
+                {format!("WRITE{}(0x0{} + offset, 0x{});", size.to_uppercase(), block_a, block_b)}
             },
         }
     }
@@ -48,10 +48,10 @@ mod tests {
     pub fn compile_write() {
         let env = Implementation::C {ntr: false};
         let compiler = WriteCompiler;
-        assert_eq!("*(u32 *)(0x01 + offset) = 0x02;", compiler.compile(Opcode::WriteWord,
+        assert_eq!("*(u32 *)(0x001 + offset) = 0x02;", compiler.compile(Opcode::WriteWord,
                                                                        &"01".to_owned(), &"02".to_owned(), &env));
         let env = Implementation::C {ntr: true};
-        assert_eq!("WRITEU32(0x01 + offset, 0x02);", compiler.compile(Opcode::WriteWord,
+        assert_eq!("WRITEU32(0x001 + offset, 0x02);", compiler.compile(Opcode::WriteWord,
                                                                        &"01".to_owned(), &"02".to_owned(), &env));
     }
 }
