@@ -61,9 +61,9 @@ pub fn check(path: String) {
     }
     println!();
     if errors > 0 {
-        println!("{}: {}", "Failed".red().bold(), format!("check returned {} error(s).", errors).white());
+        println!("{}: {}", "Failed".red().bold(), format!("check returned {} error(s).", errors));
     }
     else {
-        println!("{}: {}", "Success".bright_green().bold(), "check returned no errors.".white());
+        println!("{}: {}", "Success".bright_green().bold(), "check returned no errors.");
     }
 }

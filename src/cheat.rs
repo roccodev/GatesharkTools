@@ -61,5 +61,7 @@ pub enum Opcode {
     LoadDxShort = 0xda,
     LoadDxByte = 0xdb,
     AddOffset = 0xdc,
-    BtnCode = 0xdd
+    BtnCode = 0xdd,
+    PatchCode = 0xe,
+    MemoryCopy = 0xf
 }
