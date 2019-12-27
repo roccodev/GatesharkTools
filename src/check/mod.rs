@@ -10,8 +10,7 @@ macro_rules! err_if {
     };
 }
 
-pub mod write;
-pub mod comparison;
+pub mod checks;
 mod errors;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -25,11 +24,22 @@ pub trait Checker {
     fn check(&self, instr: Opcode, block_a: &str, block_b: &str) -> CheckResult;
 }
 
+pub struct AlwaysPassChecker;
+impl Checker for AlwaysPassChecker {
+    #[inline(always)]
+    fn check(&self, instr: Opcode, block_a: &str, block_b: &str) -> CheckResult {
+        CheckResult::Pass
+    }
+}
+
 pub fn get_checker(opcode: Opcode) -> Box<dyn Checker> {
-    Box::new(match opcode {
-        WriteWord | WriteShort | WriteByte => write::WriteChecker,
-        _ => write::WriteChecker
-    })
+    match opcode {
+        WriteWord | WriteShort | WriteByte => Box::new(checks::WriteChecker),
+        Reset | EndCond | SetOffsetPtr => Box::new(checks::ResetChecker),
+        Repeat | SetOffsetImmediate | AddToDxData | SetDxData | CopyDxByte | CopyDxShort | CopyDxWord
+        | LoadDxByte | LoadDxShort | LoadDxWord | AddOffset | BtnCode => Box::new(checks::ZeroAfterOpcodeChecker),
+        _ => Box::new(AlwaysPassChecker)
+    }
 }
 
 fn check_instruction_pre(instruction: &Instruction, results: &mut Vec<CheckResult>) {
