@@ -4,5 +4,9 @@ version = "0.1.0"
 authors = ["RoccoDev <roccodev.business@gmail.com>"]
 edition = "2018"
 
+[[bin]]
+name = "cli"
+path = "bin/cli/main.rs"
+
 [dependencies]
 num_enum = "0.4.2"
