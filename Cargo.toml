@@ -9,16 +9,23 @@ name = "cli"
 path = "bin/cli/main.rs"
 required-features = ["cli"]
 
+[[bin]]
+name = "gui"
+path = "bin/gui/main.rs"
+required-features = ["gui"]
+
 [dependencies]
 num_enum = "0.4.2"
 regex = "1.3.1"
 clap = {version = "2.33.0", features = ["yaml"], optional = true}
 colored = {version = "1.9.0", optional = true}
+orbtk = {version = "0.3.1-alpha1", optional = true}
 
 # Current workaround until
 # https://github.com/dmarcuse/rfcs/blob/master/text/0000-cargo-artifact-specific-dependencies.md
 [features]
 cli = ["clap", "colored"]
+gui = ["orbtk"]
 
 [profile.release]
 opt-level = 'z'
