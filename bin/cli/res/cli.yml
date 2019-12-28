@@ -11,3 +11,18 @@ subcommands:
             short: f
             help: A path to the Gateshark file.
             takes_value: true
+  - compile:
+      about: Compiles a Gateshark sheet into the given implementation.
+      args:
+        - file:
+            short: f
+            help: A path to the input file.
+            takes_value: true
+        - output:
+            short: o
+            help: A path to the output file.
+            takes_value: true
+        - implementation:
+            short: i
+            help: The target implementation.
+            takes_value: true

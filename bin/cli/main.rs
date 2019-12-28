@@ -16,17 +16,30 @@
 #[macro_use]
 extern crate clap;
 
+use std::convert::TryInto;
+
 use clap::{App, AppSettings};
 
 mod check;
+mod compile;
+
+#[derive(Debug)]
+pub enum CliError {
+    Subcommand,
+    File,
+    Check
+}
 
 fn main() {
     let yml = load_yaml!("res/cli.yml");
     let app = App::from_yaml(yml).setting(AppSettings::ArgRequiredElseHelp);
     let matches = app.get_matches();
-    match matches.subcommand_name() {
-        Some("check") => check::check(matches.subcommand().1
-            .unwrap().value_of("file").unwrap().to_owned()), // TODO Prettify
-        _ => {}
-    }
+    let (name, sub) = matches.subcommand();
+    let sub = sub.unwrap();
+    let _res = match name {
+        "check" => {check::check(sub.value_of("file").unwrap().to_owned()); Ok(())}, // TODO Prettify
+        "compile" => compile::compile(sub.value_of("file").unwrap(),
+                                      sub.value_of("output"), sub.value_of("implementation")),
+        _ => Err(CliError::Subcommand)
+    };
 }

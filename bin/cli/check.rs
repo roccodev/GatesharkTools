@@ -19,26 +19,31 @@ use std::io::{BufRead, BufReader};
 
 use colored::*;
 
+use gateshark_tools::cheat::Cheat;
 use gateshark_tools::check::{check_cheat, CheckResult};
 use gateshark_tools::parse::parse_cheat;
 
-pub fn check(path: String) {
+use crate::CliError;
+
+pub fn check(path: String) -> Result<Vec<Cheat>, CliError> {
     let mut errors = 0;
     let file = match File::open(&path) {
         Ok(f) => f,
         Err(err) => {
             println!("{}: {}: {}", "Error".red().bold(), "Error opening file".white().bold(), err);
-            return;
+            return Err(CliError::File);
         }
     };
     println!("{} {} {}\n", "Running".bright_green().bold(), "check on", path);
     let reader = BufReader::new(&file);
     let lines: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
     let mut cheats = lines.split(|l| l.trim().is_empty());
+    let mut parsed = vec![];
     for cheat in cheats {
         let cheat = parse_cheat(cheat);
         let (result, info) = check_cheat(&cheat);
         if result == CheckResult::Pass {
+            parsed.push(cheat);
             continue;
         }
         for res in info {
@@ -58,12 +63,15 @@ pub fn check(path: String) {
                 _ => {}
             }
         }
+        parsed.push(cheat);
     }
     println!();
     if errors > 0 {
         println!("{}: {}", "Failed".red().bold(), format!("check returned {} error(s).", errors));
+        Err(CliError::Check)
     }
     else {
         println!("{}: {}", "Success".bright_green().bold(), "check returned no errors.");
+        Ok(parsed)
     }
 }
